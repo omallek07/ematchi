@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Grid from './Grid.svelte';
-	import { levels } from './levels';
-	import type { Level } from './levels';
+	import { levels } from '$lib/levels';
+	import type { Level } from '$lib/levels';
+	import { shuffle } from '$lib/utils';
 
 	const level = levels[0];
 
@@ -13,7 +14,7 @@
 		const copy = level.emojis.slice();
 		const pairs: string[] = [];
 
-		for (let i = 0; i < level.size ** 2 / 2; i += 1) {
+		for (let i = 0; i < size ** 2 / 2; i += 1) {
 			const index = Math.floor(Math.random() * copy.length);
 			const emoji = copy[index];
 			copy.splice(index, 1);
@@ -21,14 +22,20 @@
 		}
 
 		pairs.push(...pairs);
-		return pairs;
+		return shuffle(pairs);
 	}
 </script>
 
 <div class="game">
 	<div class="info"></div>
 	<div class="grid-container">
-		<Grid {grid} />
+		<Grid
+			{grid}
+			on:found={(e) => {
+				found = [...found, e.detail];
+			}}
+			{found}
+		/>
 	</div>
 	<div class="info"></div>
 </div>
