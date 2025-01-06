@@ -8,7 +8,8 @@
 
 	let size: number = level.size;
 	let grid: string[] = createGrid(level);
-	let found: string[] = [];
+
+	let found: string[] = $state([]);
 
 	function createGrid(level: Level) {
 		const copy = level.emojis.slice();
@@ -31,8 +32,8 @@
 	<div class="grid-container">
 		<Grid
 			{grid}
-			on:found={(e) => {
-				found = [...found, e.detail];
+			handleMatchingPair={(emoji: string) => {
+				found = [...found, emoji];
 			}}
 			{found}
 		/>

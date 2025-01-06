@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import Square from './Square.svelte';
-	export let grid: string[];
-	export let found: string[];
+	interface Props {
+		handleMatchingPair: (emoji: string) => void;
+		grid: string[];
+		found: string[];
+	}
+	let { handleMatchingPair, grid, found }: Props = $props();
+	let a: number = $state(-1);
+	let b: number = $state(-1);
 
-	const dispatch = createEventDispatcher();
-
-	let a: number = -1;
-	let b: number = -1;
+	$inspect(a, b); // will console.log when `count` or `message` change
 	let resetTimeout: number;
 </script>
 
@@ -23,7 +25,8 @@
 					b = i;
 					if (grid[a] === grid[b]) {
 						// correct
-						dispatch('found', emoji);
+						handleMatchingPair(emoji);
+						a = b = -1;
 					} else {
 						// incorrect
 						resetTimeout = setTimeout(() => {
@@ -31,8 +34,8 @@
 						}, 1000);
 					}
 				} else {
-					b = -1;
-					a = i;
+					a = -1;
+					b = i;
 				}
 			}}
 			selected={a === i || b === 1}

@@ -1,7 +1,13 @@
 <script lang="ts">
-	export let emoji: string;
-	export let selected: boolean;
-	export let found: boolean;
+	interface Props {
+		emoji: string;
+		selected: boolean;
+		found: boolean;
+	}
+
+	let { emoji, selected, found }: Props = $props();
+
+	$inspect(found);
 </script>
 
 <div class="square" class:flipped={selected}>
