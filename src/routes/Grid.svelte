@@ -8,8 +8,6 @@
 	let { handleMatchingPair, grid, found }: Props = $props();
 	let a: number = $state(-1);
 	let b: number = $state(-1);
-
-	$inspect(a, b); // will console.log when `count` or `message` change
 	let resetTimeout: number;
 </script>
 
@@ -18,15 +16,15 @@
 		<Square
 			{emoji}
 			on:click={() => {
-				clearTimeout(resetTimeout);
-				if (a === -1 && b === -1) {
+				if (a > -1 && b > -1) {
+					clearTimeout(resetTimeout);
 					a = i;
-				} else if (b === -1) {
+					b = -1;
+				} else if (a > -1) {
 					b = i;
 					if (grid[a] === grid[b]) {
 						// correct
 						handleMatchingPair(emoji);
-						a = b = -1;
 					} else {
 						// incorrect
 						resetTimeout = setTimeout(() => {
@@ -34,11 +32,10 @@
 						}, 1000);
 					}
 				} else {
-					a = -1;
-					b = i;
+					a = i;
 				}
 			}}
-			selected={a === i || b === 1}
+			selected={a === i || b === i}
 			found={found.includes(emoji)}
 		/>
 	{/each}
@@ -51,5 +48,6 @@
 		grid-template-rows: repeat(4, 1fr);
 		grid-gap: 0.5em;
 		height: 100%;
+		perspective: 100vw;
 	}
 </style>

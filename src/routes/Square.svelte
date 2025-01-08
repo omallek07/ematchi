@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getTwemojiUrl } from '$lib';
 	interface Props {
 		emoji: string;
 		selected: boolean;
@@ -6,35 +7,52 @@
 	}
 
 	let { emoji, selected, found }: Props = $props();
-
-	$inspect(found);
 </script>
 
-<div class="square" class:flipped={selected}>
-	<button aria-label="square" on:click></button>
+<div class="square" class:flipped={selected || found}>
+	<button aria-label="square" on:click />
+	<div class="background" />
 
 	{#if !found}
-		<span>{emoji}</span>
+		<img alt={emoji} src={getTwemojiUrl(emoji)} />
 	{/if}
 </div>
 
 <style>
 	.square {
-		background-color: yellow;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		transition: transform 0.4s;
+		transform-style: preserve-3d;
 	}
 	button {
 		position: absolute;
 		width: 100%;
 		height: 100%;
+		backface-visibility: hidden;
+		background: #eee;
+		border: 0;
+		border-radius: 1em;
+		font-size: inherit;
 	}
-	.flipped button {
-		background-color: red;
+	.background {
+		position: absolute;
+		background: white;
+		border: 0.5em solid #eee;
+		transform: rotateY(180deg);
+		backface-visibility: hidden;
+		width: 100%;
+		height: 100%;
 	}
-	span {
+	.flipped {
+		transform: rotateY(180deg);
+	}
+	img {
+		height: 6em;
+		width: 6em;
 		pointer-events: none;
-		font-size: 5em;
+		transform: rotateY(180deg);
+		backface-visibility: hidden;
 	}
 </style>
