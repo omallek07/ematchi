@@ -2,13 +2,14 @@
 	interface Props {
 		remaining: number;
 		duration: number;
+		toggleCountdown: () => void;
 	}
 
-	let { remaining, duration }: Props = $props();
+	let { remaining, duration, toggleCountdown }: Props = $props();
 </script>
 
 <div class="countdown">
-	<button>
+	<button onclick={toggleCountdown}>
 		<img alt="Pause Countdown" src="pause_circle.svg" />
 	</button>
 	<div class="duration">

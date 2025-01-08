@@ -68,13 +68,22 @@
 
 <div class="game">
 	<div class="info">
-		<Countdown {remaining} duration={level.duration} />
+		<Countdown
+			toggleCountdown={() => {
+				// TODO pause the game
+			}}
+			{remaining}
+			duration={level.duration}
+		/>
 	</div>
 	<div class="grid-container">
 		<Grid
 			{grid}
 			handleMatchingPair={(emoji: string) => {
 				found = [...found, emoji];
+				if (found.length === (size * size) / 2) {
+					// TODO win the game
+				}
 			}}
 			{found}
 		/>
