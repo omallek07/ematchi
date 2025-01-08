@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { getTwemojiUrl } from '$lib';
+	import { getTwemojiUrl, send } from '$lib';
 	interface Props {
 		emoji: string;
 		selected: boolean;
 		found: boolean;
+		group: 'a' | 'b';
 	}
 
-	let { emoji, selected, found }: Props = $props();
+	let { emoji, selected, found, group }: Props = $props();
 </script>
 
 <div class="square" class:flipped={selected || found}>
@@ -14,7 +15,13 @@
 	<div class="background" />
 
 	{#if !found}
-		<img alt={emoji} src={getTwemojiUrl(emoji)} />
+		<img
+			out:send={{
+				key: `${emoji}:${group}`
+			}}
+			alt={emoji}
+			src={getTwemojiUrl(emoji)}
+		/>
 	{/if}
 </div>
 

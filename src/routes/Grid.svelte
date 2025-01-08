@@ -35,6 +35,7 @@
 					a = i;
 				}
 			}}
+			group={grid.indexOf(emoji) === i ? 'a' : 'b'}
 			selected={a === i || b === i}
 			found={found.includes(emoji)}
 		/>
