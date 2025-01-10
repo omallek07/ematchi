@@ -2,3 +2,4 @@
 export * from './levels';
 export * from './utils';
 export * from './transitions';
+export * from './types';

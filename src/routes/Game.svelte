@@ -4,18 +4,22 @@
 	import Found from './Found.svelte';
 	import Countdown from './Countdown.svelte';
 
-	import { levels } from '$lib/levels';
-	import type { Level } from '$lib/levels';
+	import type { Level, State } from '$lib';
+
 	import { shuffle } from '$lib/utils';
 
-	const level = levels[0];
+	let {
+		setGameStatus
+	}: {
+		setGameStatus: (status: State) => void;
+	} = $props();
 
-	let size: number = level.size;
+	let size: number = $state(0);
 	let grid: string[] = $state([]);
-
+	let duration: number = $state(0);
 	let found: string[] = $state([]);
-	let remaining: number = $state(level.duration);
-	let playing: boolean = $state(true);
+	let remaining: number = $state(0);
+	let playing: boolean = $state(false);
 
 	function createGrid(level: Level) {
 		const copy = level.emojis.slice();
@@ -32,6 +36,20 @@
 		return shuffle(pairs);
 	}
 
+	export function start(level: Level) {
+		console.log('level', level);
+		size = level.size;
+		grid = createGrid(level);
+		remaining = duration = level.duration;
+		resume();
+	}
+
+	function resume() {
+		playing = true;
+		setGameStatus('playing');
+		countdown();
+	}
+
 	function countdown() {
 		const start = Date.now();
 		let remainingAtStart = remaining;
@@ -43,38 +61,37 @@
 
 			if (remaining <= 0) {
 				playing = false;
-				// The game has been lost
-				// stop the countdown
+				setGameStatus('lost');
 			}
 		}
 		loop();
 	}
 
-	onMount(countdown);
+	// if (typeof window !== 'undefined') {
+	// 	// stash the value...
+	// 	const initial = createGrid(level);
 
-	if (typeof window !== 'undefined') {
-		// stash the value...
-		const initial = createGrid(level);
+	// 	// unset it...
+	// 	grid = [];
 
-		// unset it...
-		grid = [];
-
-		$effect(() => {
-			// ...and reset after we've mounted
-			grid = initial;
-		});
-	}
+	// 	$effect(() => {
+	// 		// ...and reset after we've mounted
+	// 		grid = initial;
+	// 	});
+	// }
 </script>
 
-<div class="game">
+<div class="game" style="--size: {size}">
 	<div class="info">
-		<Countdown
-			toggleCountdown={() => {
-				// TODO pause the game
-			}}
-			{remaining}
-			duration={level.duration}
-		/>
+		{#if playing}
+			<Countdown
+				toggleCountdown={() => {
+					setGameStatus('paused');
+				}}
+				{remaining}
+				{duration}
+			/>
+		{/if}
 	</div>
 	<div class="grid-container">
 		<Grid
@@ -82,7 +99,7 @@
 			handleMatchingPair={(emoji: string) => {
 				found = [...found, emoji];
 				if (found.length === (size * size) / 2) {
-					// TODO win the game
+					setGameStatus('won');
 				}
 			}}
 			{found}

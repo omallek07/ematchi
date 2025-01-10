@@ -17,6 +17,4 @@
 		place-items: center;
 		z-index: 999;
 	}
-	.modal {
-	}
 </style>

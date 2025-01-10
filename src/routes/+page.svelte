@@ -4,11 +4,17 @@
 	import Modal from './Modal.svelte';
 
 	import { levels } from '$lib';
+	import type { State } from '$lib';
 
-	let state: 'waiting' | 'playing' | 'paused' | 'won' | 'lost' = 'waiting';
+	let state: State = 'waiting';
+	let game: Game;
+
+	function setGameStatus(status: State) {
+		state = status;
+	}
 </script>
 
-<Game />
+<Game bind:this={game} {setGameStatus} />
 
 {#if state !== 'playing'}
 	<Modal>
@@ -25,11 +31,15 @@
 		{/if}
 		<div class="buttons">
 			{#if state === 'paused'}
-				<button>resume</button>
-				<button>quit</button>
+				<button onclick={() => setGameStatus('playing')}>resume</button>
+				<button onclick={() => setGameStatus('lost')}>quit</button>
 			{:else}
 				{#each levels as level}
-					<button>{level.label}</button>
+					<button
+						onclick={() => {
+							game.start(level);
+						}}>{level.label}</button
+					>
 				{/each}
 			{/if}
 		</div>
